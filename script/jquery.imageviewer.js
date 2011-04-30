@@ -1,5 +1,5 @@
 /*!
- * jQuery Image Viewer plugin 0.0.1
+ * jQuery Image Viewer plugin
  *
  * Copyright 2011, George Paterson
  * Dual licensed under the MIT or GPL Version 2 licenses.
