@@ -5,3 +5,11 @@
  * Dual licensed under the MIT or GPL Version 2 licenses.
  *
  */
+
+.imageviewer {
+	width: 100%;
+	height: 100%;
+}
+.imageviewer-tile {
+	position: absolute;
+}

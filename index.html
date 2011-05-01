@@ -3,7 +3,19 @@
 	<head>
 		<title>jQuery Image Viewer</title>
 		<link rel="stylesheet" href="themes/jquery.imageviewer.css" media="screen">
+		<style>
+			#example {
+				width: 600px;
+				height: 600px;
+			}
+		</style>
 		<script src="external/jquery.js"></script>
+		<script src="script/jquery.imageviewer.js"></script>
+		<script>
+			$(document).ready(function() {
+				$('#example').imageviewer();
+			});
+		</script>
 	</head>
 	<body>
 		<div id="page">
@@ -16,21 +28,21 @@
 						<div id="example">
 							<div class="imageviewer">
 								<div class="imageviewer-frame">
-									<img class="imageviewer-tile" src="">
-									<img class="imageviewer-tile" src="">
-									<img class="imageviewer-tile" src="">
-									<img class="imageviewer-tile" src="">
-									<img class="imageviewer-tile" src="">
-									<img class="imageviewer-tile" src="">
-									<img class="imageviewer-tile" src="">
-									<img class="imageviewer-tile" src="">
-									<img class="imageviewer-tile" src="">
-									<img class="imageviewer-tile" src="">
-									<img class="imageviewer-tile" src="">
-									<img class="imageviewer-tile" src="">
-									<img class="imageviewer-tile" src="">
-									<img class="imageviewer-tile" src="">
-									<img class="imageviewer-tile" src="">
+									<img class="imageviewer-tile" src="image/imageviewer-tile-1-0-0.png">
+									<img class="imageviewer-tile" src="image/imageviewer-tile-1-0-1.png">
+									<img class="imageviewer-tile" src="image/imageviewer-tile-1-1-0.png">
+									<img class="imageviewer-tile" src="image/imageviewer-tile-1-1-1.png">
+									<img class="imageviewer-tile" src="image/imageviewer-tile-empty.png">
+									<img class="imageviewer-tile" src="image/imageviewer-tile-empty.png">
+									<img class="imageviewer-tile" src="image/imageviewer-tile-empty.png">
+									<img class="imageviewer-tile" src="image/imageviewer-tile-empty.png">
+									<img class="imageviewer-tile" src="image/imageviewer-tile-empty.png">
+									<img class="imageviewer-tile" src="image/imageviewer-tile-empty.png">
+									<img class="imageviewer-tile" src="image/imageviewer-tile-empty.png">
+									<img class="imageviewer-tile" src="image/imageviewer-tile-empty.png">
+									<img class="imageviewer-tile" src="image/imageviewer-tile-empty.png">
+									<img class="imageviewer-tile" src="image/imageviewer-tile-empty.png">
+									<img class="imageviewer-tile" src="image/imageviewer-tile-empty.png">
 								</div>
 								<div class="imageviewer-interface">
 								
