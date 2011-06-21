@@ -23,10 +23,10 @@
 			settings = $.fn.imageviewer.defaults;
 		}
 		return this.each(function () {
-			element = $(this);
-			elementWidth = $(this).width();
-			elementHeight = $(this).height();
-			elementOffset = $(this).offset();
+			self = $(this);
+			self.width = $(this).width();
+			self.height = $(this).height();
+			self.offset = $(this).offset();
 			$.fn.imageviewer.methods.init();
 		});
 	};
@@ -35,9 +35,9 @@
 	 *
 	 */
 	$.fn.imageviewer.defaults = {
-		fileLocation: 'image',
-		fileType: '.png',
-		tileSize: 256,
+		location: 'image',
+		type: '.png',
+		size: 256,
 		zoom: 1
 	};
 	$.fn.imageviewer.methods = {
@@ -46,19 +46,21 @@
 		 *
 		 */	
 		init: function () {
-			imageSize = settings.tileSize * Math.pow(2, settings.zoom);
-			imageCenter = {
-				horizontal: ((imageSize - elementWidth) / -2), 
-				vertical: ((imageSize - elementHeight) / -2)
-			};
 			tiles = [];
-			columns = Math.ceil(elementWidth / settings.tileSize) + 1;
-			rows = Math.ceil(elementHeight / settings.tileSize) + 1;
-			startPosition = {
+			image = {
+				size: settings.size * Math.pow(2, settings.zoom),
+				columns: Math.ceil(self.width / settings.size) + 1,
+				rows: Math.ceil(self.height / settings.size) + 1
+			};
+			image.center = {
+				horizontal: ((image.size - self.width) / -2), 
+				vertical: ((image.size - self.height) / -2)
+			};
+			image.start = {
 				horizontal: 0,
 				vertical: 0
 			};
-			eventPosition = {
+			image.position = {
 				horizontal: 0,
 				vertical: 0
 			};
@@ -72,10 +74,10 @@
 			var i = 0,
 				j = 0,
 				tile = [],
-				image= null;
-			for ( i = 0; i < columns; i++) {
+				source = null;
+			for ( i = 0; i < image.columns; i++) {
 				var group = [];
-				for ( j = 0; j < rows; j++) {
+				for ( j = 0; j < image.rows; j++) {
 					tile = {
 						column: i, 
 						row: j,
@@ -83,9 +85,9 @@
 						horizontal: 0,
 						html: null
 					};
-					image = $.fn.imageviewer.methods.imageSource(tile);
-					tile.html = $('<img class="imageviewer-tile" src="'+image+'" style="top: '+ tile.vertical +'px; left: '+ tile.horizontal +'px;">');
-					$('.imageviewer-frame', element).append(tile.html);
+					source = $.fn.imageviewer.methods.source(tile);
+					tile.html = $('<img class="imageviewer-tile" src="'+source+'" style="top: '+ tile.vertical +'px; left: '+ tile.horizontal +'px;">');
+					$('.imageviewer-frame', self).append(tile.html);
 					group.push(tile);
 				}
 				tiles.push(group);
@@ -99,12 +101,12 @@
 		 *	Tiles outside image area will be empty.
 		 *
 		 */
-		imageSource: function (tile) {
-	    var imageSource = settings.fileLocation + '/imageviewer-tile-' + settings.zoom + '-' + tile.column + '-' + tile.row + settings.fileType;
+		source: function (tile) {
+	    var source = settings.location + '/imageviewer-tile-' + settings.zoom + '-' + tile.column + '-' + tile.row + settings.type;
 			if (tile.column < 0 || tile.column >= Math.pow(2, settings.zoom) || tile.row < 0  || tile.row >= Math.pow(2, settings.zoom)) {
-				imageSource = settings.fileLocation + '/imageviewer-tile-empty' + settings.fileType;
+				source = settings.location + '/imageviewer-tile-empty' + settings.type;
 			}
-			return imageSource;
+			return source;
 		},
 		/*
 		 *	Reposition tiles outside the frame.
@@ -114,35 +116,35 @@
 		 */
 		position: function () {
 			var i = 0,
-			j = 0,
-			tile = [];
+				j = 0,
+				tile = [];
 			for ( i = 0; i < tiles.length; i++) {
 				for ( j = 0; j < tiles[i].length; j++) {
 					tile = tiles[i][j];
-					tile.vertical = (tile.row * settings.tileSize) + imageCenter.vertical + (eventPosition.vertical - startPosition.vertical);
-					tile.horizontal = (tile.column * settings.tileSize) + imageCenter.horizontal + (eventPosition.horizontal - startPosition.horizontal);
-					if (tile.vertical > elementHeight) {
-						while (tile.vertical > elementHeight) {
-							tile.row = tile.row - tiles[i].length;
-							tile.vertical = (tile.row * settings.tileSize) + imageCenter.vertical + (eventPosition.vertical - startPosition.vertical);
+					tile.vertical = (tile.row * settings.size) + image.center.vertical + (image.position.vertical - image.start.vertical);
+					tile.horizontal = (tile.column * settings.size) + image.center.horizontal + (image.position.horizontal - image.start.horizontal);
+					if (tile.vertical > self.height) {
+						while (tile.vertical > self.height) {
+							tile.row -= tiles[i].length;
+							tile.vertical = (tile.row * settings.size) + image.center.vertical + (image.position.vertical - image.start.vertical);
 						}
 					} 
 					else {
-						while (tile.vertical < (-settings.tileSize)) {
-							tile.row = tile.row + tiles[i].length;
-							tile.vertical = (tile.row * settings.tileSize) + imageCenter.vertical + (eventPosition.vertical - startPosition.vertical);
+						while (tile.vertical < (-settings.size)) {
+							tile.row += tiles[i].length;
+							tile.vertical = (tile.row * settings.size) + image.center.vertical + (image.position.vertical - image.start.vertical);
 						}
 					}
-					if (tile.horizontal > elementWidth) {
-						while (tile.horizontal > elementWidth) {
-							tile.column = tile.column - tiles.length;
-							tile.horizontal = (tile.column * settings.tileSize) + imageCenter.horizontal + (eventPosition.horizontal - startPosition.horizontal);
+					if (tile.horizontal > self.width) {
+						while (tile.horizontal > self.width) {
+							tile.column -= tiles.length;
+							tile.horizontal = (tile.column * settings.size) + image.center.horizontal + (image.position.horizontal - image.start.horizontal);
 						}
 					} 
 					else {
-						while (tile.horizontal < (-settings.tileSize)) {
-							tile.column = tile.column + tiles.length;
-							tile.horizontal = (tile.column * settings.tileSize) + imageCenter.horizontal + (eventPosition.horizontal - startPosition.horizontal);
+						while (tile.horizontal < (-settings.size)) {
+							tile.column += tiles.length;
+							tile.horizontal = (tile.column * settings.size) + image.center.horizontal + (image.position.horizontal - image.start.horizontal);
 						}
 					}
 					tile.html.css({'top' : tile.vertical +'px', 'left': tile.horizontal +'px'});
@@ -151,29 +153,29 @@
 		},
 		pan: function () {
 			/*
-			 *	Prevents the image element being independently dragged.
+			 *	Prevents the image self being independently dragged.
 			 *	
 			 */
-			$('img', element).bind('dragstart', function (event) {
+			$('img', self).bind('dragstart', function (event) {
 				return false;
 			});
 			/*
 			 * Bind mouse down, move and up events to pan the image.
 			 *	
 			 */
-			$('.imageviewer-interface', element).bind('mousedown', function (event) {
-				startPosition.horizontal = (event.pageX - elementOffset.left);
-				startPosition.vertical = (event.pageY - elementOffset.top);
-				$('.imageviewer-interface', element).bind('mousemove', function (event) {
-					eventPosition.horizontal = (event.pageX - elementOffset.left);
-					eventPosition.vertical = (event.pageY - elementOffset.top);
+			$('.imageviewer-interface', self).bind('mousedown', function (event) {
+				image.start.horizontal = (event.pageX - self.offset.left);
+				image.start.vertical = (event.pageY - self.offset.top);
+				$('.imageviewer-interface', self).bind('mousemove', function (event) {
+					image.position.horizontal = (event.pageX - self.offset.left);
+					image.position.vertical = (event.pageY - self.offset.top);
 					$.fn.imageviewer.methods.position();
 				});
 			});
-			$('.imageviewer-interface', element).bind('mouseup', function (event) {
-				$('.imageviewer-interface', element).unbind('mousemove');
-				imageCenter.horizontal += (eventPosition.horizontal - startPosition.horizontal);
-        imageCenter.vertical += (eventPosition.vertical - startPosition.vertical);
+			$('.imageviewer-interface', self).bind('mouseup', function (event) {
+				$('.imageviewer-interface', self).unbind('mousemove');
+				image.center.horizontal += (image.position.horizontal - image.start.horizontal);
+        image.center.vertical += (image.position.vertical - image.start.vertical);
 			});
 		}
 	};
