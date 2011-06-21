@@ -85,8 +85,7 @@
 						horizontal: 0,
 						html: null
 					};
-					source = $.fn.imageviewer.methods.source(tile);
-					tile.html = $('<img class="imageviewer-tile" src="'+source+'" style="top: '+ tile.vertical +'px; left: '+ tile.horizontal +'px;">');
+					tile.html = $('<img class="imageviewer-tile" style="top: '+ tile.vertical +'px; left: '+ tile.horizontal +'px;">');
 					$('.imageviewer-frame', self).append(tile.html);
 					group.push(tile);
 				}
@@ -117,7 +116,8 @@
 		position: function () {
 			var i = 0,
 				j = 0,
-				tile = [];
+				tile = [],
+				source = null;
 			for ( i = 0; i < tiles.length; i++) {
 				for ( j = 0; j < tiles[i].length; j++) {
 					tile = tiles[i][j];
@@ -148,6 +148,8 @@
 						}
 					}
 					tile.html.css({'top' : tile.vertical +'px', 'left': tile.horizontal +'px'});
+					source = $.fn.imageviewer.methods.source(tile);
+					tile.html.attr('src', source);
 				}
 			}
 		},
