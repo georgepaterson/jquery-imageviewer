@@ -35,10 +35,13 @@
 	 *
 	 */
 	$.fn.imageviewer.defaults = {
-		location: 'image',
+		location: 'image/',
+		prefix: 'imageviewer-tile-',
+		empty: '/imageviewer-tile-empty',
 		type: '.png',
 		size: 256,
 		zoom: 1,
+		max: 3,
 		scroll: 10
 	};
 	$.fn.imageviewer.methods = {
@@ -164,9 +167,9 @@
 		 *
 		 */
 		source: function (tile) {
-	    var source = settings.location + '/imageviewer-tile-' + image.zoom + '-' + tile.column + '-' + tile.row + settings.type;
+	    var source = settings.location + settings.prefix + image.zoom + '-' + tile.column + '-' + tile.row + settings.type;
 			if (tile.column < 0 || tile.column >= Math.pow(2, image.zoom) || tile.row < 0  || tile.row >= Math.pow(2, image.zoom)) {
-				source = settings.location + '/imageviewer-tile-empty' + settings.type;
+				source = settings.location + settings.empty + settings.type;
 			}
 			return source;
 		},
