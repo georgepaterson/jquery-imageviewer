@@ -38,7 +38,8 @@
 		location: 'image',
 		type: '.png',
 		size: 256,
-		zoom: 1
+		zoom: 1,
+		scroll: 10
 	};
 	$.fn.imageviewer.methods = {
 		/*
@@ -50,7 +51,8 @@
 			image = {
 				size: settings.size * Math.pow(2, settings.zoom),
 				columns: Math.ceil(self.width / settings.size) + 1,
-				rows: Math.ceil(self.height / settings.size) + 1
+				rows: Math.ceil(self.height / settings.size) + 1,
+				zoom: settings.zoom
 			};
 			image.center = {
 				horizontal: ((image.size - self.width) / -2), 
@@ -64,6 +66,8 @@
 				horizontal: 0,
 				vertical: 0
 			};
+			image.html = $('<div class="imageviewer"><div class="imageviewer-frame"></div><div class="imageviewer-interface"></div><div class="imageviewer-controls"></div></div>');
+			$(self).append(image.html);
 	    $.fn.imageviewer.methods.create();
 		},
 		/*
@@ -90,9 +94,68 @@
 					group.push(tile);
 				}
 				tiles.push(group);
-			}	
+			}
 			$.fn.imageviewer.methods.position();
+			$.fn.imageviewer.methods.controller();
 			$.fn.imageviewer.methods.pan();
+			$.fn.imageviewer.methods.zoom();
+		},
+		/*
+		 *
+		 *	
+		 */
+		controller: function () {
+			var controls = {
+				html: $('<ul class="imageviewer-pan"><li class="imageviewer-pan-up"><a class="imageviewer-pan-up-control" href="#">Pan up</a></li><li class="imageviewer-pan-down"><a class="imageviewer-pan-down-control" href="#">Pan down</a></li><li class="imageviewer-pan-left"><a class="imageviewer-pan-left-control" href="#">Pan left</a></li><li class="imageviewer-pan-right"><a class="imageviewer-pan-right-control" href="#">Pan right</a></li></ul>'
+					+'<ul class="imageviewer-zoom"><li class="imageviewer-zoom-in"><a class="imageviewer-zoom-in-control" href="#">Zoom in</a></li><li class="imageviewer-zoom-out"><a class="imageviewer-zoom-out-control" href="#">Zoom out</a></li></ul>'),
+				distance: parseInt((settings.size / 10), settings.scroll)
+			};
+			$(controls.html).delegate('a', 'click', function (event) {
+				event.preventDefault();
+				switch($(this).attr('class')) {
+					case 'imageviewer-pan-up-control':
+						image.start.horizontal = 0, image.start.vertical = 0;
+						image.position.horizontal = 0, image.position.vertical = -controls.distance;
+						$.fn.imageviewer.methods.position();
+						image.center.horizontal -= 0, image.center.vertical -= controls.distance;
+					  break;
+					case 'imageviewer-pan-down-control':
+						image.start.horizontal = 0, image.start.vertical = 0;
+						image.position.horizontal = 0, image.position.vertical = controls.distance;
+						$.fn.imageviewer.methods.position();
+						image.center.horizontal += 0, image.center.vertical += controls.distance;
+					  break;
+					case 'imageviewer-pan-left-control':
+						image.start.horizontal = 0, image.start.vertical = 0;
+						image.position.horizontal = -controls.distance, image.position.vertical = 0;
+						$.fn.imageviewer.methods.position();
+						image.center.horizontal -= controls.distance, image.center.vertical -= 0;
+					  break;
+					case 'imageviewer-pan-right-control':
+						image.start.horizontal = 0, image.start.vertical = 0;
+						image.position.horizontal = controls.distance, image.position.vertical = 0;
+						$.fn.imageviewer.methods.position();
+						image.center.horizontal += controls.distance, image.center.vertical += 0;
+					  break;
+					case 'imageviewer-zoom-in-control':
+						image.start.horizontal = 0, image.start.vertical = 0;
+						image.position.horizontal = 0, image.position.vertical = 0;
+						image.zoom += 1
+						$.fn.imageviewer.methods.position();
+						image.center.horizontal += 0, image.center.vertical += 0;
+					  break;
+					case 'imageviewer-zoom-out-control':
+						image.start.horizontal = 0, image.start.vertical = 0;
+						image.position.horizontal = 0, image.position.vertical = 0;
+						image.zoom -= 1
+						$.fn.imageviewer.methods.position();
+						image.center.horizontal += 0, image.center.vertical += 0;
+					  break;
+					default:
+					  break;
+				}
+			});
+			$('.imageviewer-controls', self).append(controls.html);
 		},
 		/*
 		 *	Find the image source.
@@ -101,8 +164,8 @@
 		 *
 		 */
 		source: function (tile) {
-	    var source = settings.location + '/imageviewer-tile-' + settings.zoom + '-' + tile.column + '-' + tile.row + settings.type;
-			if (tile.column < 0 || tile.column >= Math.pow(2, settings.zoom) || tile.row < 0  || tile.row >= Math.pow(2, settings.zoom)) {
+	    var source = settings.location + '/imageviewer-tile-' + image.zoom + '-' + tile.column + '-' + tile.row + settings.type;
+			if (tile.column < 0 || tile.column >= Math.pow(2, image.zoom) || tile.row < 0  || tile.row >= Math.pow(2, image.zoom)) {
 				source = settings.location + '/imageviewer-tile-empty' + settings.type;
 			}
 			return source;
@@ -153,6 +216,10 @@
 				}
 			}
 		},
+		/*
+		 *
+		 *	
+		 */
 		pan: function () {
 			/*
 			 *	Prevents the image self being independently dragged.
@@ -179,6 +246,16 @@
 				image.center.horizontal += (image.position.horizontal - image.start.horizontal);
         image.center.vertical += (image.position.vertical - image.start.vertical);
 			});
+		},
+		/*
+		 * 
+		 *	
+		 */
+		zoom: function () {
+
+			// Zoom based on double click or mouse scroll.
+			// Pinch would be interesting.
+
 		}
 	};
 })( jQuery );
