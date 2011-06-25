@@ -113,6 +113,7 @@
 					+'<ul class="imageviewer-zoom"><li class="imageviewer-zoom-in"><a class="imageviewer-zoom-in-control" href="#">Zoom in</a></li><li class="imageviewer-zoom-out"><a class="imageviewer-zoom-out-control" href="#">Zoom out</a></li></ul>'),
 				distance: parseInt((settings.size / 10), settings.scroll)
 			};
+			$(controls.html).attr({'unselectable': 'on'}).css({'-moz-user-select': 'none', '-webkit-user-select': 'none'}).bind('onselectstart', function (event) {return false;});
 			$(controls.html).delegate('a', 'click', function (event) {
 				event.preventDefault();
 				switch($(this).attr('class')) {
