@@ -101,7 +101,6 @@
 			$.fn.imageviewer.methods.position();
 			$.fn.imageviewer.methods.controller();
 			$.fn.imageviewer.methods.pan();
-			$.fn.imageviewer.methods.zoom();
 		},
 		/*
 		 *
@@ -118,42 +117,34 @@
 				event.preventDefault();
 				switch($(this).attr('class')) {
 					case 'imageviewer-pan-up-control':
-						image.start.horizontal = 0, image.start.vertical = 0;
-						image.position.horizontal = 0, image.position.vertical = -controls.distance;
+						image.start.horizontal = 0; image.start.vertical = 0;
+						image.position.horizontal = 0; image.position.vertical = -controls.distance;
 						$.fn.imageviewer.methods.position();
-						image.center.horizontal -= 0, image.center.vertical -= controls.distance;
+						image.center.horizontal -= 0; image.center.vertical -= controls.distance;
 					  break;
 					case 'imageviewer-pan-down-control':
-						image.start.horizontal = 0, image.start.vertical = 0;
-						image.position.horizontal = 0, image.position.vertical = controls.distance;
+						image.start.horizontal = 0; image.start.vertical = 0;
+						image.position.horizontal = 0; image.position.vertical = controls.distance;
 						$.fn.imageviewer.methods.position();
-						image.center.horizontal += 0, image.center.vertical += controls.distance;
+						image.center.horizontal += 0; image.center.vertical += controls.distance;
 					  break;
 					case 'imageviewer-pan-left-control':
-						image.start.horizontal = 0, image.start.vertical = 0;
-						image.position.horizontal = -controls.distance, image.position.vertical = 0;
+						image.start.horizontal = 0; image.start.vertical = 0;
+						image.position.horizontal = -controls.distance; image.position.vertical = 0;
 						$.fn.imageviewer.methods.position();
-						image.center.horizontal -= controls.distance, image.center.vertical -= 0;
+						image.center.horizontal -= controls.distance; image.center.vertical -= 0;
 					  break;
 					case 'imageviewer-pan-right-control':
-						image.start.horizontal = 0, image.start.vertical = 0;
-						image.position.horizontal = controls.distance, image.position.vertical = 0;
+						image.start.horizontal = 0; image.start.vertical = 0;
+						image.position.horizontal = controls.distance; image.position.vertical = 0;
 						$.fn.imageviewer.methods.position();
-						image.center.horizontal += controls.distance, image.center.vertical += 0;
+						image.center.horizontal += controls.distance; image.center.vertical += 0;
 					  break;
 					case 'imageviewer-zoom-in-control':
-						image.start.horizontal = 0, image.start.vertical = 0;
-						image.position.horizontal = 0, image.position.vertical = 0;
-						image.zoom += 1
-						$.fn.imageviewer.methods.position();
-						image.center.horizontal += 0, image.center.vertical += 0;
+						$.fn.imageviewer.methods.zoom(1);
 					  break;
 					case 'imageviewer-zoom-out-control':
-						image.start.horizontal = 0, image.start.vertical = 0;
-						image.position.horizontal = 0, image.position.vertical = 0;
-						image.zoom -= 1
-						$.fn.imageviewer.methods.position();
-						image.center.horizontal += 0, image.center.vertical += 0;
+						$.fn.imageviewer.methods.zoom(-1);
 					  break;
 					default:
 					  break;
@@ -255,11 +246,12 @@
 		 * 
 		 *	
 		 */
-		zoom: function () {
-
-			// Zoom based on double click or mouse scroll.
-			// Pinch would be interesting.
-
+		zoom: function (level) {
+			image.start.horizontal = 0; image.start.vertical = 0;
+			image.position.horizontal = 0; image.position.vertical = 0;
+			image.zoom += level;
+			$.fn.imageviewer.methods.position();
+			image.center.horizontal += 0; image.center.vertical += 0;
 		}
 	};
 })( jQuery );
