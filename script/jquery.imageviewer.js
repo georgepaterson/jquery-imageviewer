@@ -40,8 +40,8 @@
 		empty: '/imageviewer-tile-empty',
 		type: '.png',
 		size: 256,
-		zoom: 1,
-		max: 3,
+		zoom: 0,
+		max: 2,
 		scroll: 10
 	};
 	$.fn.imageviewer.methods = {
@@ -247,11 +247,29 @@
 		 *	
 		 */
 		zoom: function (level) {
-			image.start.horizontal = 0; image.start.vertical = 0;
-			image.position.horizontal = 0; image.position.vertical = 0;
-			image.zoom += level;
-			$.fn.imageviewer.methods.position();
-			image.center.horizontal += 0; image.center.vertical += 0;
+			if ((image.zoom + level >= 0) && (image.zoom + level <= settings.max)) {
+				if (level > 0) {
+					image.start.horizontal = level * ((settings.size * Math.pow(2, image.zoom)) / 2); 
+					image.start.vertical = level * ((settings.size * Math.pow(2, image.zoom)) / 2);
+					image.zoom += level;
+				}
+				else {
+					image.zoom += level;
+					image.start.horizontal = level * ((settings.size * Math.pow(2, image.zoom)) / 2); 
+					image.start.vertical = level * ((settings.size * Math.pow(2, image.zoom)) / 2);
+				}
+				image.position.horizontal = 0; 
+				image.position.vertical = 0;
+				$.fn.imageviewer.methods.position();
+				if (level > 0) {
+					image.center.horizontal += level * (image.position.horizontal - image.start.horizontal);
+					image.center.vertical += level * (image.position.vertical - image.start.vertical);
+				}
+				else {
+					image.center.horizontal -= level * (image.position.horizontal - image.start.horizontal);
+					image.center.vertical -= level * (image.position.vertical - image.start.vertical);
+				}
+			}
 		}
 	};
 })( jQuery );
